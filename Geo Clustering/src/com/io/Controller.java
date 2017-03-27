@@ -13,6 +13,7 @@ public class Controller {
 	public Controller(String filename) {
 		csvParser = new CsvParser(filename);
 		loc = csvParser.readFirstRecord();
+		datapoints=new LinkedList<>();
 	}
 
 	public void start() {
@@ -22,8 +23,8 @@ public class Controller {
 		// System.out.println(l);
 		DBSCAN d = new DBSCAN(datapoints, 20, 2);
 		d.DBSCAN_Clustering();
-		
 		System.out.println(csvParser.readNextRecord());
+		System.err.println("Some problem Occurs!!");
 	}
 
 }
