@@ -25,6 +25,7 @@ public class Controller {
 		d.DBSCAN_Clustering();
 		System.out.println(csvParser.readNextRecord());
 		System.err.println("Some problem Occurs!!");
+		System.err.println("Problem in readData method of the CsvParser class!!");
 	}
 
 }
