@@ -12,7 +12,8 @@ public class CsvParser {
 	LinkedList<Location> dataList;
 	String filename;
 	File file;
-	private Scanner scan, nextScan;
+	private static Scanner scan;
+	private Scanner nextScan,firstScan;
 	private TimeParser timeparser;
 
 	public CsvParser(String filename) {
@@ -22,6 +23,7 @@ public class CsvParser {
 		timeparser = new TimeParser();
 		try {
 			nextScan = new Scanner(file);
+			scan = new Scanner(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -57,11 +59,10 @@ public class CsvParser {
 		dataList = new LinkedList<>();
 		Location loc;
 		boolean flag = false;
-		try {
-			scan = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		/*
+		 * try { scan = new Scanner(file); } catch (FileNotFoundException e) {
+		 * e.printStackTrace(); }
+		 */
 		String row = scan.nextLine();
 		// System.out.println(row);
 		// row = scan.nextLine();
@@ -73,7 +74,9 @@ public class CsvParser {
 			values = row.split(",");
 			if (timeparser.parseTime(values[3]).getTime() != timestamp.getTime()) {
 				flag = true;
+				scan = nextScan;
 				break;
+				
 			}
 			loc = new Location(values[0], Double.parseDouble(values[1]), Double.parseDouble(values[2]),
 					timeparser.parseTime(values[3]));
@@ -105,16 +108,16 @@ public class CsvParser {
 	public Location readFirstRecord() {
 		Location loc;
 		try {
-			scan = new Scanner(file);
+			firstScan = new Scanner(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		scan.nextLine();
-		String row = scan.nextLine();
+		firstScan.nextLine();
+		String row = firstScan.nextLine();
 		String[] values = row.split(",");
 		loc = new Location(values[0], Double.parseDouble(values[1]), Double.parseDouble(values[2]),
 				timeparser.parseTime(values[3]));
-		nextScan = scan;
+		nextScan = firstScan;
 		return loc;
 	}
 
