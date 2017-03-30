@@ -3,17 +3,17 @@ package com.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Timestamp;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.DBSCAN.Location;
 
 public class CsvParser {
-	LinkedList<Location> dataList;
+	ArrayList<Location> dataList;
 	String filename;
 	File file;
-	private static Scanner scan;
-	private Scanner nextScan,firstScan;
+	private static Scanner scan,wholeScan;
+	private Scanner nextScan, firstScan;
 	private TimeParser timeparser;
 
 	public CsvParser(String filename) {
@@ -24,25 +24,27 @@ public class CsvParser {
 		try {
 			nextScan = new Scanner(file);
 			scan = new Scanner(file);
+			scan.nextLine();
+			scan.nextLine();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public LinkedList<Location> readData() {
-		dataList = new LinkedList<>();
+	public ArrayList<Location> readData() {
+		dataList = new ArrayList<>();
 		Location loc;
 		try {
-			scan = new Scanner(file);
+			wholeScan = new Scanner(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		String row = scan.nextLine();
+		String row = wholeScan.nextLine();
 		// System.out.println(row);
 		String[] values = row.split(",");
 		// System.out.println(values.length);
-		while (scan.hasNext()) {
-			row = scan.nextLine();
+		while (wholeScan.hasNext()) {
+			row = wholeScan.nextLine();
 			values = row.split(",");
 			loc = new Location(values[0], Double.parseDouble(values[1]), Double.parseDouble(values[2]),
 					timeparser.parseTime(values[3]));
@@ -55,8 +57,8 @@ public class CsvParser {
 		return dataList;
 	}
 
-	public LinkedList<Location> readData(Timestamp timestamp) {
-		dataList = new LinkedList<>();
+	public ArrayList<Location> readData_next(Timestamp timestamp) {
+		dataList = new ArrayList<>();
 		Location loc;
 		boolean flag = false;
 		/*
@@ -69,14 +71,14 @@ public class CsvParser {
 		String[] values = row.split(",");
 		// System.out.println(values.length);
 		while (scan.hasNext()) {
-			nextScan = scan;
+			//nextScan = (Scanner) scan.clone();
 			row = scan.nextLine();
 			values = row.split(",");
 			if (timeparser.parseTime(values[3]).getTime() != timestamp.getTime()) {
 				flag = true;
 				scan = nextScan;
 				break;
-				
+
 			}
 			loc = new Location(values[0], Double.parseDouble(values[1]), Double.parseDouble(values[2]),
 					timeparser.parseTime(values[3]));
@@ -85,6 +87,46 @@ public class CsvParser {
 			// System.out.println(row);
 		}
 		if (flag == false)
+			nextScan = scan;
+		/*
+		 * for (Location l : dataList) System.out.println(l);
+		 */
+
+		return dataList;
+	}
+	public ArrayList<Location> readData(Location l) {
+		dataList = new ArrayList<>();
+		Location loc;
+		//boolean flag = false;
+		/*
+		 * try { scan = new Scanner(file); } catch (FileNotFoundException e) {
+		 * e.printStackTrace(); }
+		 */
+		dataList.add(l);
+		String row;
+		// System.out.println(row);
+		// row = scan.nextLine();
+		String[] values;
+		// System.out.println(values.length);
+		while (scan.hasNext()) {
+		//	nextScan = (Scanner) scan.clone();
+			row = scan.nextLine();
+			values = row.split(",");
+			if (timeparser.parseTime(values[3]).getTime() != l.getTimestamp().getTime()) {
+			//	flag = true;
+				loc = new Location(values[0], Double.parseDouble(values[1]), Double.parseDouble(values[2]),
+						timeparser.parseTime(values[3]));
+				dataList.add(loc);
+				break;
+
+			}
+			loc = new Location(values[0], Double.parseDouble(values[1]), Double.parseDouble(values[2]),
+					timeparser.parseTime(values[3]));
+			dataList.add(loc);
+
+			// System.out.println(row);
+		}
+		/*if (flag == false)
 			nextScan = scan;
 		/*
 		 * for (Location l : dataList) System.out.println(l);

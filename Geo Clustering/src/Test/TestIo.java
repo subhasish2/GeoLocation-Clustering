@@ -10,7 +10,7 @@ public class TestIo {
 		String filename = "csv/bike.csv";
 		//CsvParser parser = new CsvParser(filename);
 		//parser.readData();
-		//DBSCAN d = new DBSCAN(filename, 20, 1);
+		//DBSCAN d = new DBSCAN(filename, 20, 2);
 		//d.DBSCAN_Clustering();
 		//d.showStatus();
 		//d.showClusters();

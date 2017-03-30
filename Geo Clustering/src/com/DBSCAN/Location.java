@@ -13,6 +13,16 @@ public class Location {
 		this.longitude = longitude;
 		this.timestamp = timestamp;
 	}
+	
+
+	public Location(Location l) {
+		super();
+		this.timestamp = l.timestamp;
+		this.id = l.id;
+		this.longitude = l.longitude;
+		this.latitude = l.latitude;
+	}
+
 
 	// return distance between this location and that location
 	// measured in statute miles

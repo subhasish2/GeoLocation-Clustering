@@ -1,32 +1,32 @@
 package com.DBSCAN;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import com.io.CsvParser;
 
 public class DBSCAN {
-	LinkedList<Location> SetofPoints;
-	LinkedList<Cluster> clusters;
+	ArrayList<Location> SetofPoints;
+	ArrayList<Cluster> clusters;
 	int Eps, MinPts;
 	Map<Location, PointStatus> visited;
 
-	public DBSCAN(LinkedList<Location> points, int eps, int minpts) {
+	public DBSCAN(ArrayList<Location> points, int eps, int minpts) {
 		Eps = eps;
 		MinPts = minpts;
-		SetofPoints = new LinkedList<>(points);
-		clusters = new LinkedList<>();
+		SetofPoints = new ArrayList<>(points);
+		clusters = new ArrayList<>();
 		visited = new HashMap<Location, PointStatus>();
 	}
 	public DBSCAN(String filename, int eps, int minpts) {
 		CsvParser parser = new CsvParser(filename);
 		Eps = eps;
 		MinPts = minpts;
-		SetofPoints = new LinkedList<>(parser.readData());
-		clusters = new LinkedList<>();
+		SetofPoints = new ArrayList<>(parser.readData());
+		clusters = new ArrayList<>();
 		visited = new HashMap<Location, PointStatus>();
 	}
 
@@ -34,7 +34,7 @@ public class DBSCAN {
 		for (Location loc : SetofPoints) {
 			if (visited.get(loc) != null)
 				continue;
-			LinkedList<Location> neighbours = new LinkedList<>(getNeighbours(loc));
+			ArrayList<Location> neighbours = new ArrayList<>(getNeighbours(loc));
 			if (neighbours.size() >= MinPts) {
 				Cluster newCluster = new Cluster(clusters.size());
 				clusters.add(expandCluster(loc, newCluster, neighbours));
@@ -42,22 +42,22 @@ public class DBSCAN {
 				visited.put(loc, PointStatus.NOISE);
 			}
 		}
-		System.out.println(clusters.size());
+		System.out.println("No. of Cluster: "+clusters.size());
 		for(Cluster c:clusters) {
 			c.showCluster();
 		}
 	}
 
-	private Cluster expandCluster(Location loc, Cluster newCluster, LinkedList<Location> neighbours) {
+	private Cluster expandCluster(Location loc, Cluster newCluster, ArrayList<Location> neighbours) {
 		newCluster.addLocation(loc);
 		visited.put(loc, PointStatus.PART_OF_CLUSTER);
-		LinkedList<Location> seeds = new LinkedList<Location>(neighbours);
+		ArrayList<Location> seeds = new ArrayList<Location>(neighbours);
 		int index = 0;
 		while (index < seeds.size()) {
 			Location current = seeds.get(index);
 			PointStatus pStatus = visited.get(current);
 			if (pStatus == null) {
-				LinkedList<Location> currentNeighbours = getNeighbours(current);
+				ArrayList<Location> currentNeighbours = getNeighbours(current);
 				if (currentNeighbours.size() >= MinPts) {
 					seeds = merge(seeds, currentNeighbours);
 				}
@@ -74,8 +74,8 @@ public class DBSCAN {
 
 	}
 
-	private LinkedList<Location> getNeighbours(Location l) {
-		LinkedList<Location> neighbours = new LinkedList<>();
+	private ArrayList<Location> getNeighbours(Location l) {
+		ArrayList<Location> neighbours = new ArrayList<>();
 		for (Location neighbour : SetofPoints) {
 			if (l != neighbour && neighbour.distanceTo(l) <= Eps) {
 				neighbours.add(neighbour);
@@ -84,7 +84,7 @@ public class DBSCAN {
 		return neighbours;
 	}
 
-	private LinkedList<Location> merge(LinkedList<Location> one, LinkedList<Location> two) {
+	private ArrayList<Location> merge(ArrayList<Location> one, ArrayList<Location> two) {
 		final Set<Location> oneSet = new HashSet<Location>(one);
 		for (Location item : two) {
 			if (!oneSet.contains(item)) {
