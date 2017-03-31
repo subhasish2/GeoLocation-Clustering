@@ -18,13 +18,13 @@ public class Controller {
 
 	public void start() {
 		// System.out.println(loc);
-		//int i = 6;
+		// int i = 6;
 		while (loc != null) {
 			datapoints = csvParser.readData(loc);
 			Location newloc = datapoints.get(datapoints.size() - 1);
 			System.out.println("For time: " + loc.getTimestamp());
 			if (newloc.getTimestamp().getTime() == loc.getTimestamp().getTime())
-				loc=null;
+				loc = null;
 			else {
 				loc = new Location(newloc);
 				datapoints.remove(datapoints.size() - 1);
@@ -36,7 +36,7 @@ public class Controller {
 			d.DBSCAN_Clustering();
 
 			// loc = csvParser.readNextRecord();
-			//i--;
+			// i--;
 		}
 		// System.err.println("Some problem Occurs!!");
 		// System.err.println("Problem in readData method of the CsvParser

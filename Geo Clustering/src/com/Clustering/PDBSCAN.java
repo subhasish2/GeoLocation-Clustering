@@ -1,6 +1,7 @@
 package com.Clustering;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,12 +11,14 @@ import com.DBSCAN.Cluster;
 import com.DBSCAN.Location;
 import com.DBSCAN.PointStatus;
 import com.io.CsvParser;
+import com.io.Writer;
 
 public class PDBSCAN {
 	ArrayList<Location> SetofPoints;
 	ArrayList<Cluster> clusters;
 	int Eps, MinPts;
 	Map<Location, PointStatus> visited;
+	Writer writer = new Writer("Output/file_" + new Date().getTime() + ".txt");
 
 	public PDBSCAN(ArrayList<Location> points, int eps, int minpts) {
 		Eps = eps;
@@ -24,6 +27,7 @@ public class PDBSCAN {
 		clusters = new ArrayList<>();
 		visited = new HashMap<Location, PointStatus>();
 	}
+
 	public PDBSCAN(String filename, int eps, int minpts) {
 		CsvParser parser = new CsvParser(filename);
 		Eps = eps;
@@ -32,6 +36,7 @@ public class PDBSCAN {
 		clusters = new ArrayList<>();
 		visited = new HashMap<Location, PointStatus>();
 	}
+
 	public void PDBSCAN_Clustering() {
 		for (Location loc : SetofPoints) {
 			if (visited.get(loc) != null)
@@ -44,12 +49,14 @@ public class PDBSCAN {
 				visited.put(loc, PointStatus.NOISE);
 			}
 		}
-		
-		for(Cluster c:clusters) {
-			c.showCluster();
-		}
-		System.out.println("No. of Cluster: "+clusters.size());
+
+		/*
+		 * for (Cluster c : clusters) { c.showCluster(); }
+		 */
+		writer.write(clusters);
+		System.out.println("No. of Cluster: " + clusters.size());
 	}
+
 	private Cluster expandCluster(Location loc, Cluster newCluster, ArrayList<Location> neighbours) {
 		newCluster.addLocation(loc);
 		visited.put(loc, PointStatus.PART_OF_CLUSTER);
@@ -58,12 +65,11 @@ public class PDBSCAN {
 		while (index < seeds.size()) {
 			Location current = seeds.get(index);
 			PointStatus pStatus = visited.get(current);
-			/*if (pStatus == null) {
-				ArrayList<Location> currentNeighbours = getNeighbours(current);
-				if (currentNeighbours.size() >= MinPts) {
-					seeds = merge(seeds, currentNeighbours);
-				}
-			}*/
+			/*
+			 * if (pStatus == null) { ArrayList<Location> currentNeighbours =
+			 * getNeighbours(current); if (currentNeighbours.size() >= MinPts) {
+			 * seeds = merge(seeds, currentNeighbours); } }
+			 */
 			if (pStatus != PointStatus.PART_OF_CLUSTER) {
 				visited.put(current, PointStatus.PART_OF_CLUSTER);
 				newCluster.addLocation(current);
@@ -71,10 +77,11 @@ public class PDBSCAN {
 
 			index++;
 		}
-		
+
 		return newCluster;
 
 	}
+
 	private ArrayList<Location> getNeighbours(Location l) {
 		ArrayList<Location> neighbours = new ArrayList<>();
 		for (Location neighbour : SetofPoints) {
@@ -84,6 +91,7 @@ public class PDBSCAN {
 		}
 		return neighbours;
 	}
+
 	private ArrayList<Location> merge(ArrayList<Location> one, ArrayList<Location> two) {
 		final Set<Location> oneSet = new HashSet<Location>(one);
 		for (Location item : two) {
