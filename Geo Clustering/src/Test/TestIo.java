@@ -1,5 +1,6 @@
 package Test;
 
+import com.Clustering.PDBSCAN;
 import com.DBSCAN.DBSCAN;
 import com.io.Controller;
 import com.io.CsvParser;
@@ -10,12 +11,12 @@ public class TestIo {
 		String filename = "csv/bike.csv";
 		//CsvParser parser = new CsvParser(filename);
 		//parser.readData();
-		//DBSCAN d = new DBSCAN(filename, 20, 2);
-		//d.DBSCAN_Clustering();
+		PDBSCAN d = new PDBSCAN(filename, 1000, 2);
+		d.PDBSCAN_Clustering();
 		//d.showStatus();
 		//d.showClusters();
-		Controller controller=new Controller(filename);
-		controller.start();
+		//Controller controller=new Controller(filename);
+		//controller.start();
 	}
 
 }
