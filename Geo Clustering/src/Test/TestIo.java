@@ -15,8 +15,8 @@ public class TestIo {
 		d.PDBSCAN_Clustering();
 		// d.showStatus();
 		// d.showClusters();
-		// Controller controller=new Controller(filename);
-		// controller.start();
+		//Controller controller=new Controller(filename);
+		//controller.start();
 	}
 
 }
